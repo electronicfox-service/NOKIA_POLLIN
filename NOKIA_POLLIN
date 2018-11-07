@@ -1,0 +1,1087 @@
+
+// --------------------------------------------------------------------------------------------------
+// Autor: Alexander "Electronicfox" Fuchs (C)
+// Infrarotempfänger mit binären statischen Ausgang und 5 Bits.
+// Schaltet mit den Tasten 1 bis 9 die Programme 1 bis 9 durch.
+// Erweiterung bis 16 mit Hilfe der Programmtasten UP und DOWN.
+// DACs für Lautstärke, Bässe und Höhen.
+// STAND-BY ist möglich mit der Taste Bereitschaft
+// Seriele Ausgabe mit USB für die Statusüberprüfung
+// Geeignet für Nokia FB D-BOX1 und D-BOX2 sowie die POLLIN IRC-FB
+
+#include <IRremote.h>
+
+int RECV_PIN = 7;
+int Out1 = 9;
+int Out2 = 10;
+int Out3 = 11;
+int Out4 = 12;
+int STBY = 13;
+int LOAD = 8;
+int CUP = 6;
+int CDN = 5;
+int IREN = 4;
+int TVVCR = 3;
+float refVcc = 5.0;
+
+
+IRrecv irrecv(RECV_PIN);
+decode_results results;
+
+void setup() {
+  Serial.begin(9600);
+  irrecv.enableIRIn(); // Start the receiver
+  pinMode( Out1, OUTPUT);
+  pinMode( Out2, OUTPUT);
+  pinMode( Out3, OUTPUT);
+  pinMode( Out4, OUTPUT);
+  pinMode( LOAD, OUTPUT);
+  pinMode( CUP, OUTPUT);
+  pinMode( CDN, OUTPUT);
+  pinMode( STBY, OUTPUT);
+  pinMode( IREN, OUTPUT);
+  pinMode( TVVCR, OUTPUT);
+
+
+      digitalWrite(TVVCR, LOW); // TV/VCR OUTPUT
+      digitalWrite(STBY, LOW); // STBY OUTPUT
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(CUP, HIGH); // COUNT UP
+      digitalWrite(CDN, HIGH); // COUNT DOWN
+      delay(5000);
+      Serial.println("********************************************************************************************************");
+      Serial.println("**                                I'm alive!!! Hello world!!!                                         **");
+      Serial.println("********************************************************************************************************");
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(Out1, HIGH); //
+      digitalWrite(Out2, LOW); //
+      digitalWrite(Out3, HIGH); //
+      digitalWrite(Out4, HIGH); //
+      digitalWrite(IREN, HIGH); // IR OUTPUT
+      delay(4000);
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      delay(2500);
+      digitalWrite(STBY, LOW); // STBY OUTPUT
+      digitalWrite(Out1, HIGH); //
+      digitalWrite(Out2, HIGH); //
+      digitalWrite(Out3, HIGH); //
+      digitalWrite(Out4, HIGH); //
+      digitalWrite(LOAD, LOW); // LOAD OUTPUT
+      delay(500);
+      digitalWrite(LOAD, HIGH); // LOAD OUTPUT
+      delay(50);
+      Serial.println("********************************************************************************************************");
+      Serial.println("**                                 STAND-BY - Wait any seconds                                         **");
+      Serial.println("********************************************************************************************************");
+      delay(5000);
+      digitalWrite(STBY, HIGH); // STBY OUTPUT
+      digitalWrite(Out1, LOW); // BIT0
+      digitalWrite(Out2, LOW); // BIT1
+      digitalWrite(Out3, LOW); // BIT2
+      digitalWrite(Out4, LOW); // BIT3
+      digitalWrite(LOAD, LOW); // LOAD OUTPUT
+      digitalWrite(IREN, HIGH); // IR OUTPUT
+      delay(2000);
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      delay(50);
+      digitalWrite(LOAD, HIGH); // LOAD OUTPUT
+      Serial.println("********************************************************************************************************");
+      Serial.println("**                          OK! You can use the remote control now!                                   **");
+      Serial.println("********************************************************************************************************");
+
+}
+
+void loop() {
+
+
+  if (irrecv.decode(&results)) {
+
+    digitalWrite(Out1, HIGH); // BIT0
+    digitalWrite(Out2, HIGH); // BIT1
+    digitalWrite(Out3, HIGH); // BIT2
+    digitalWrite(Out4, HIGH); // BIT3
+    digitalWrite(LOAD, HIGH); // LOAD OUTPUT
+    digitalWrite(IREN, HIGH); // IR OUTPUT
+
+
+
+    // NOKIA DBOX-CODE
+    // --------------------------------------------------------------------------------------------------------------------------------------
+
+    
+    if (results.value == 0xFE7B5362) { // 1 Button
+
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(Out1, LOW); // Activates 1
+      digitalWrite(Out2, LOW); // Activates 2
+      digitalWrite(Out3, LOW); // Activates 3
+      digitalWrite(Out4, LOW); // Activates 4
+      digitalWrite(LOAD, LOW); // LOAD OUTPUT
+      digitalWrite(IREN, HIGH); // IR OUTPUT
+      delay(1000);
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(LOAD, HIGH); // LOAD OUTPUT
+      digitalWrite(STBY, HIGH); // STBY OUTPUT
+      Serial.print(" ");
+      Serial.println(results.value, HEX);
+      Serial.println("PROGRAMM 1");
+      irrecv.resume(); // Receive the next value
+    }
+    if (results.value == 0xCEBC16BF) { // 2 Button
+
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(Out1, HIGH); // Activates 1
+      digitalWrite(Out2, LOW); // Activates 2
+      digitalWrite(Out3, LOW); // Activates 3
+      digitalWrite(Out4, LOW); // Activates 4
+      digitalWrite(LOAD, LOW); // LOAD OUTPUT
+      digitalWrite(IREN, HIGH); // IR OUTPUT
+      delay(1000);
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(LOAD, HIGH); // LOAD OUTPUT
+      digitalWrite(STBY, HIGH); // STBY OUTPUT
+      Serial.print(" ");
+      Serial.println(results.value, HEX);
+      Serial.println("PROGRAMM 2");
+      irrecv.resume(); // Receive the next value
+    }
+    if (results.value == 0x12FB45A6) { // 3 Button
+
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(Out1, LOW); // Activates 1
+      digitalWrite(Out2, HIGH); // Activates 2
+      digitalWrite(Out3, LOW); // Activates 3
+      digitalWrite(Out4, LOW); // Activates 4
+      digitalWrite(LOAD, LOW); // LOAD OUTPUT
+      digitalWrite(IREN, HIGH); // IR OUTPUT
+      delay(1000);
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(LOAD, HIGH); // LOAD OUTPUT
+      digitalWrite(STBY, HIGH); // STBY OUTPUT
+      Serial.print(" ");
+      Serial.println(results.value, HEX);
+      Serial.println("PROGRAMM 3");
+      irrecv.resume(); // Receive the next value
+    }
+
+    if (results.value == 0xECE415F1) { // 4 Button
+
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(Out1, HIGH); // Activates 1
+      digitalWrite(Out2, HIGH); // Activates 2
+      digitalWrite(Out3, LOW); // Activates 3
+      digitalWrite(Out4, LOW); // Activates 4
+      digitalWrite(LOAD, LOW); // LOAD OUTPUT
+      digitalWrite(IREN, HIGH); // IR OUTPUT
+      delay(1000);
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(LOAD, HIGH); // LOAD OUTPUT
+      digitalWrite(STBY, HIGH); // STBY OUTPUT
+      Serial.print(" ");
+      Serial.println(results.value, HEX);
+      Serial.println("PROGRAMM 4");
+      irrecv.resume(); // Receive the next value
+    }
+    if (results.value == 0xEC1A48AE) { // 5 BUTTON
+
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(Out1, LOW); // Activates 1
+      digitalWrite(Out2, LOW); // Activates 2
+      digitalWrite(Out3, HIGH); // Activates 3
+      digitalWrite(Out4, LOW); // Activates 4
+      digitalWrite(LOAD, LOW); // LOAD OUTPUT
+      digitalWrite(IREN, HIGH); // IR OUTPUT
+      delay(1000);
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(LOAD, HIGH); // LOAD OUTPUT
+      digitalWrite(STBY, HIGH); // STBY OUTPUT
+      Serial.print(" ");
+      Serial.println(results.value, HEX);
+      Serial.println("PROGRAMM 5");
+      irrecv.resume(); // Receive the next value
+    }
+
+    if (results.value == 0x845CC99D) { // 6 Button
+
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(Out1, HIGH); // Activates 1
+      digitalWrite(Out2, LOW); // Activates 2
+      digitalWrite(Out3, HIGH); // Activates 3
+      digitalWrite(Out4, LOW); // Activates 4
+      digitalWrite(LOAD, LOW); // LOAD OUTPUT
+      digitalWrite(IREN, HIGH); // IR OUTPUT
+      delay(1000);
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(LOAD, HIGH); // LOAD OUTPUT
+      digitalWrite(STBY, HIGH); // STBY OUTPUT
+      Serial.print(" ");
+      Serial.println(results.value, HEX);
+      Serial.println("PROGRAMM 6");
+      irrecv.resume(); // Receive the next value
+    }
+    if (results.value == 0x5AC2F642) { // 7 Button
+
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(Out1, LOW); // Activates 1
+      digitalWrite(Out2, HIGH); // Activates 2
+      digitalWrite(Out3, HIGH); // Activates 3
+      digitalWrite(Out4, LOW); // Activates 4
+      digitalWrite(LOAD, LOW); // LOAD OUTPUT
+      digitalWrite(IREN, HIGH); // IR OUTPUT
+      delay(1000);
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(LOAD, HIGH); // LOAD OUTPUT
+      digitalWrite(STBY, HIGH); // STBY OUTPUT
+      Serial.print(" ");
+      Serial.println(results.value, HEX);
+      Serial.println("PROGRAMM 7");
+      irrecv.resume(); // Receive the next value
+    }
+
+    if (results.value == 0xA1516C1) { // 8 Button
+
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(Out1, HIGH); // Activates 1
+      digitalWrite(Out2, HIGH); // Activates 2
+      digitalWrite(Out3, HIGH); // Activates 3
+      digitalWrite(Out4, LOW); // Activates 4
+      digitalWrite(LOAD, LOW); // LOAD OUTPUT
+      digitalWrite(IREN, HIGH); // IR OUTPUT
+      delay(1000);
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(LOAD, HIGH); // LOAD OUTPUT
+      digitalWrite(STBY, HIGH); // STBY OUTPUT
+      Serial.print(" ");
+      Serial.println(results.value, HEX);
+      Serial.println("PROGRAMM 8");
+      irrecv.resume(); // Receive the next value
+    }
+
+    if (results.value == 0xBFB03A10) { // 9 Button
+
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(Out1, LOW); // Activates 1
+      digitalWrite(Out2, LOW); // Activates 2
+      digitalWrite(Out3, LOW); // Activates 3
+      digitalWrite(Out4, HIGH); // Activates 4
+      digitalWrite(LOAD, LOW); // LOAD OUTPUT
+      digitalWrite(IREN, HIGH); // IR OUTPUT
+      delay(1000);
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(LOAD, HIGH); // LOAD OUTPUT
+      digitalWrite(STBY, HIGH); // STBY OUTPUT
+      Serial.print(" ");
+      Serial.println(results.value, HEX);
+      Serial.println("PROGRAMM 9");
+      irrecv.resume(); // Receive the next value
+    }
+
+    if (results.value == 0x92BADD5D) { // STBY Button
+
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(Out1, HIGH); //
+      digitalWrite(Out2, LOW); //
+      digitalWrite(Out3, HIGH); //
+      digitalWrite(Out4, HIGH); //
+      digitalWrite(IREN, HIGH); // IR OUTPUT
+      delay(4000);
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(Out1, HIGH); //
+      digitalWrite(Out2, HIGH); //
+      digitalWrite(Out3, HIGH); //
+      digitalWrite(Out4, HIGH); //
+      digitalWrite(LOAD, LOW); // LOAD OUTPUT
+      delay(500);
+      digitalWrite(LOAD, HIGH); // LOAD OUTPUT
+      delay(50);
+      digitalWrite(STBY, LOW); // STBY OUTPUT
+      Serial.print(" ");
+      Serial.println(results.value, HEX);
+      Serial.println("********************************************************************************************************");
+      Serial.println("**                                 STAND-BY - Wait any seconds                                         **");
+      Serial.println("********************************************************************************************************");
+      delay(6000);
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      Serial.println("********************************************************************************************************");
+      Serial.println("**                         OK! You can use the remote control again!                                  **");
+      Serial.println("********************************************************************************************************");
+      irrecv.resume(); // Receive the next value
+    }
+
+
+
+
+
+
+
+
+
+    if (results.value == 0xC321C961) { // UP Button
+
+      digitalWrite(CUP, LOW); // LOAD OUTPUT
+      delay(50);
+      digitalWrite(CUP, HIGH); // LOAD OUTPUT
+      Serial.print(" ");
+      Serial.println(results.value, HEX);
+      Serial.println("BUTTON UP");
+      delay(500);
+
+
+
+    }
+
+    if (results.value == 0xB9EE8C46) { // DOWN Button
+
+      digitalWrite(CDN, LOW); // LOAD OUTPUT
+      delay(50);
+      digitalWrite(CDN, HIGH); // LOAD OUTPUT
+      Serial.print(" ");
+      Serial.println(results.value, HEX);
+      Serial.println("BUTTON DOWN");
+
+
+
+    }
+
+
+
+    if (results.value == 0x47BB9AF0) { // RCU TV/VCR Button
+
+
+      digitalWrite(TVVCR, HIGH); // TV/VCR OUTPUT
+      delay(50);
+      digitalWrite(TVVCR, LOW); // TV/VCR OUTPUT
+      Serial.print(" ");
+      Serial.println(results.value, HEX);
+      Serial.println("BUTTON TV/VCR");
+      delay(250);
+
+
+    }
+
+
+    if (results.value == 0x2405607E) { // Left Button
+
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(Out1, HIGH); // Activates 1
+      digitalWrite(Out2, LOW); // Activates 2
+      digitalWrite(Out3, LOW); // Activates 3
+      digitalWrite(Out4, HIGH); // Activates 4
+      digitalWrite(LOAD, HIGH); // LOAD OUTPUT
+      digitalWrite(IREN, HIGH); // IR OUTPUT
+      delay(1000);
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(LOAD, HIGH); // LOAD OUTPUT
+      digitalWrite(STBY, HIGH); // STBY OUTPUT
+      int sensorValue = analogRead(A1);
+      Serial.print(" ");
+      Serial.println(results.value, HEX);
+      Serial.println("BASS DOWN");
+      // Convert the analog reading (which goes from 0 - 1023) to a voltage (0 - 5V):
+      float voltage = (sensorValue * refVcc / 1024);
+      // print out the value you read:
+      Serial.print(voltage);
+      Serial.println ("V");
+      irrecv.resume(); // Receive the next value
+    }
+
+    if (results.value == 0x610D8631) { // Right Button
+
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(Out1, HIGH); // Activates 1
+      digitalWrite(Out2, HIGH); // Activates 2
+      digitalWrite(Out3, LOW); // Activates 3
+      digitalWrite(Out4, HIGH); // Activates 4
+      digitalWrite(LOAD, HIGH); // LOAD OUTPUT
+      digitalWrite(IREN, HIGH); // IR OUTPUT
+      delay(1000);
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(LOAD, HIGH); // LOAD OUTPUT
+      digitalWrite(STBY, HIGH); // STBY OUTPUT
+      int sensorValue = analogRead(A1);
+      Serial.print(" ");
+      Serial.println(results.value, HEX);
+      Serial.println("BASS UP");
+      // Convert the analog reading (which goes from 0 - 1023) to a voltage (0 - 5V):
+      float voltage = (sensorValue * refVcc / 1024);
+      // print out the value you read:
+      Serial.print(voltage);
+      Serial.println ("V");
+      irrecv.resume(); // Receive the next value
+    }
+
+    if (results.value == 0xDEAFF9B9) { // VOL+ Button
+
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(Out1, HIGH); // Activates 1
+      digitalWrite(Out2, HIGH); // Activates 2
+      digitalWrite(Out3, LOW); // Activates 3
+      digitalWrite(Out4, LOW); // Activates 4
+      digitalWrite(LOAD, HIGH); // LOAD OUTPUT
+      digitalWrite(IREN, HIGH); // IR OUTPUT
+      delay(1000);
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(LOAD, HIGH); // LOAD OUTPUT
+      digitalWrite(STBY, HIGH); // STBY OUTPUT
+      int sensorValue = analogRead(A0);
+      Serial.print(" ");
+      Serial.println(results.value, HEX);
+      Serial.println("VOLUME UP");
+      // Convert the analog reading (which goes from 0 - 1023) to a voltage (0 - 5V):
+      float voltage = (sensorValue * refVcc / 1024);
+      // print out the value you read:
+      Serial.print(voltage);
+      Serial.println ("V");
+      irrecv.resume(); // Receive the next value
+    }
+
+    if (results.value == 0xB7BD8E6E) { // VOL- Button
+
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(Out1, HIGH); // Activates 1
+      digitalWrite(Out2, LOW); // Activates 2
+      digitalWrite(Out3, LOW); // Activates 3
+      digitalWrite(Out4, LOW); // Activates 4
+      digitalWrite(LOAD, HIGH); // LOAD OUTPUT
+      digitalWrite(IREN, HIGH); // IR OUTPUT
+      delay(1000);
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(LOAD, HIGH); // LOAD OUTPUT
+      digitalWrite(STBY, HIGH); // STBY OUTPUT
+      int sensorValue = analogRead(A0);
+      Serial.print(" ");
+      Serial.println(results.value, HEX);
+      Serial.println("VOLUME DOWN");
+      // Convert the analog reading (which goes from 0 - 1023) to a voltage (0 - 5V):
+      float voltage = (sensorValue * refVcc / 1024);
+      // print out the value you read:
+      Serial.print(voltage);
+      Serial.println ("V");
+      irrecv.resume(); // Receive the next value
+    }
+
+    if (results.value == 0xEC29855D) { // UP Button
+
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(Out1, HIGH); // Activates 1
+      digitalWrite(Out2, HIGH); // Activates 2
+      digitalWrite(Out3, HIGH); // Activates 3
+      digitalWrite(Out4, LOW); // Activates 4
+      digitalWrite(LOAD, HIGH); // LOAD OUTPUT
+      digitalWrite(IREN, HIGH); // IR OUTPUT
+      delay(1000);
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(LOAD, HIGH); // LOAD OUTPUT
+      digitalWrite(STBY, HIGH); // STBY OUTPUT
+      int sensorValue = analogRead(A2);
+      Serial.print(" ");
+      Serial.println(results.value, HEX);
+      Serial.println("TREBLE UP");
+      // Convert the analog reading (which goes from 0 - 1023) to a voltage (0 - 5V):
+      float voltage = (sensorValue * refVcc / 1024);
+      // print out the value you read:
+      Serial.print(voltage);
+      Serial.println ("V");
+      irrecv.resume(); // Receive the next value
+    }
+
+    if (results.value == 0xEE38FC72) { // DOWN Button
+
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(Out1, HIGH); // Activates 1
+      digitalWrite(Out2, LOW); // Activates 2
+      digitalWrite(Out3, HIGH); // Activates 3
+      digitalWrite(Out4, LOW); // Activates 4
+      digitalWrite(LOAD, HIGH); // LOAD OUTPUT
+      digitalWrite(IREN, HIGH); // IR OUTPUT
+      delay(1000);
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(LOAD, HIGH); // LOAD OUTPUT
+      digitalWrite(STBY, HIGH); // STBY OUTPUT
+      int sensorValue = analogRead(A2);
+      Serial.print(" ");
+      Serial.println(results.value, HEX);
+      Serial.println("TREBLE DOWN");
+      // Convert the analog reading (which goes from 0 - 1023) to a voltage (0 - 5V):
+      float voltage = (sensorValue * refVcc / 1024);
+      // print out the value you read:
+      Serial.print(voltage);
+      Serial.println ("V");
+      irrecv.resume(); // Receive the next value
+    }
+
+    if (results.value == 0x4E135F13) { // MUTE Button
+
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(Out1, LOW); // Activates 1
+      digitalWrite(Out2, LOW); // Activates 2
+      digitalWrite(Out3, HIGH); // Activates 3
+      digitalWrite(Out4, HIGH); // Activates 4
+      digitalWrite(LOAD, HIGH); // LOAD OUTPUT
+      digitalWrite(IREN, HIGH); // IR OUTPUT
+      delay(1000);
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(LOAD, HIGH); // LOAD OUTPUT
+      digitalWrite(STBY, HIGH); // STBY OUTPUT
+      int sensorValue = analogRead(A0);
+      Serial.print(" ");
+      Serial.println(results.value, HEX);
+      Serial.println("MUTE ON");// Convert the analog reading (which goes from 0 - 1023) to a voltage (0 - 5V):
+      float voltage = (sensorValue * refVcc / 1024);
+      // print out the value you read:
+      Serial.print(voltage);
+      Serial.println ("V");
+      delay(1000);
+      irrecv.resume(); // Receive the next value
+    }
+
+    if (results.value == 0xD8F0EE5D) { // OK Button
+
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(Out1, LOW); // Activates 1
+      digitalWrite(Out2, HIGH); // Activates 2
+      digitalWrite(Out3, LOW); // Activates 3
+      digitalWrite(Out4, HIGH); // Activates 4
+      digitalWrite(LOAD, HIGH); // LOAD OUTPUT
+      digitalWrite(IREN, HIGH); // IR OUTPUT
+      delay(1000);
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(LOAD, HIGH); // LOAD OUTPUT
+      digitalWrite(STBY, HIGH); // STBY OUTPUT
+      Serial.print(" ");
+      Serial.println(results.value, HEX);
+      Serial.println("LAST MEMORY");
+      irrecv.resume(); // Receive the next value
+    }
+
+    if (results.value == 0x61BB33CC) { // MENU Button
+
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(Out1, LOW); // Activates 1
+      digitalWrite(Out2, LOW); // Activates 2
+      digitalWrite(Out3, LOW); // Activates 3
+      digitalWrite(Out4, HIGH); // Activates 4
+      digitalWrite(LOAD, HIGH); // LOAD OUTPUT
+      digitalWrite(IREN, HIGH); // IR OUTPUT
+      delay(1000);
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(LOAD, HIGH); // LOAD OUTPUT
+      digitalWrite(STBY, HIGH); // STBY OUTPUT
+      Serial.print(" ");
+      Serial.println(results.value, HEX);
+      Serial.println("MENU SET");
+      irrecv.resume(); // Receive the next value
+    }
+
+    if (results.value == 0x8F40AA88) { // INFO Button
+
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(Out1, LOW); // Activates 1
+      digitalWrite(Out2, HIGH); // Activates 2
+      digitalWrite(Out3, HIGH); // Activates 3
+      digitalWrite(Out4, LOW); // Activates 4
+      digitalWrite(LOAD, HIGH); // LOAD OUTPUT
+      digitalWrite(IREN, HIGH); // IR OUTPUT
+      delay(1000);
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(LOAD, HIGH); // LOAD OUTPUT
+      digitalWrite(STBY, HIGH); // STBY OUTPUT
+      Serial.print(" ");
+      Serial.println(results.value, HEX);
+      Serial.println("INFO TABLE");
+      irrecv.resume(); // Receive the next value
+    }
+
+    // --------------------------------------------------------------------------------------------------------------------------------
+
+     // POLLIN REMOTE CONTROL-CODE
+    // --------------------------------------------------------------------------------------------------------------------------------------
+
+    
+    if (results.value == 0xAED83FFF) { // 1 Button
+
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(Out1, LOW); // Activates 1
+      digitalWrite(Out2, LOW); // Activates 2
+      digitalWrite(Out3, LOW); // Activates 3
+      digitalWrite(Out4, LOW); // Activates 4
+      digitalWrite(LOAD, LOW); // LOAD OUTPUT
+      digitalWrite(IREN, HIGH); // IR OUTPUT
+      delay(1000);
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(LOAD, HIGH); // LOAD OUTPUT
+      digitalWrite(STBY, HIGH); // STBY OUTPUT
+      Serial.print(" ");
+      Serial.println(results.value, HEX);
+      Serial.println("PROGRAMM 1");
+      irrecv.resume(); // Receive the next value
+    }
+    if (results.value == 0xB621D0C6) { // 2 Button
+
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(Out1, HIGH); // Activates 1
+      digitalWrite(Out2, LOW); // Activates 2
+      digitalWrite(Out3, LOW); // Activates 3
+      digitalWrite(Out4, LOW); // Activates 4
+      digitalWrite(LOAD, LOW); // LOAD OUTPUT
+      digitalWrite(IREN, HIGH); // IR OUTPUT
+      delay(1000);
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(LOAD, HIGH); // LOAD OUTPUT
+      digitalWrite(STBY, HIGH); // STBY OUTPUT
+      Serial.print(" ");
+      Serial.println(results.value, HEX);
+      Serial.println("PROGRAMM 2");
+      irrecv.resume(); // Receive the next value
+    }
+    if (results.value == 0xE6A3037A) { // 3 Button
+
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(Out1, LOW); // Activates 1
+      digitalWrite(Out2, HIGH); // Activates 2
+      digitalWrite(Out3, LOW); // Activates 3
+      digitalWrite(Out4, LOW); // Activates 4
+      digitalWrite(LOAD, LOW); // LOAD OUTPUT
+      digitalWrite(IREN, HIGH); // IR OUTPUT
+      delay(1000);
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(LOAD, HIGH); // LOAD OUTPUT
+      digitalWrite(STBY, HIGH); // STBY OUTPUT
+      Serial.print(" ");
+      Serial.println(results.value, HEX);
+      Serial.println("PROGRAMM 3");
+      irrecv.resume(); // Receive the next value
+    }
+
+    if (results.value == 0x68C06376) { // 4 Button
+
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(Out1, HIGH); // Activates 1
+      digitalWrite(Out2, HIGH); // Activates 2
+      digitalWrite(Out3, LOW); // Activates 3
+      digitalWrite(Out4, LOW); // Activates 4
+      digitalWrite(LOAD, LOW); // LOAD OUTPUT
+      digitalWrite(IREN, HIGH); // IR OUTPUT
+      delay(1000);
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(LOAD, HIGH); // LOAD OUTPUT
+      digitalWrite(STBY, HIGH); // STBY OUTPUT
+      Serial.print(" ");
+      Serial.println(results.value, HEX);
+      Serial.println("PROGRAMM 4");
+      irrecv.resume(); // Receive the next value
+    }
+    if (results.value == 0x17368799) { // 5 BUTTON
+
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(Out1, LOW); // Activates 1
+      digitalWrite(Out2, LOW); // Activates 2
+      digitalWrite(Out3, HIGH); // Activates 3
+      digitalWrite(Out4, LOW); // Activates 4
+      digitalWrite(LOAD, LOW); // LOAD OUTPUT
+      digitalWrite(IREN, HIGH); // IR OUTPUT
+      delay(1000);
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(LOAD, HIGH); // LOAD OUTPUT
+      digitalWrite(STBY, HIGH); // STBY OUTPUT
+      Serial.print(" ");
+      Serial.println(results.value, HEX);
+      Serial.println("PROGRAMM 5");
+      irrecv.resume(); // Receive the next value
+    }
+
+    if (results.value == 0x8251D484) { // 6 Button
+
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(Out1, HIGH); // Activates 1
+      digitalWrite(Out2, LOW); // Activates 2
+      digitalWrite(Out3, HIGH); // Activates 3
+      digitalWrite(Out4, LOW); // Activates 4
+      digitalWrite(LOAD, LOW); // LOAD OUTPUT
+      digitalWrite(IREN, HIGH); // IR OUTPUT
+      delay(1000);
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(LOAD, HIGH); // LOAD OUTPUT
+      digitalWrite(STBY, HIGH); // STBY OUTPUT
+      Serial.print(" ");
+      Serial.println(results.value, HEX);
+      Serial.println("PROGRAMM 6");
+      irrecv.resume(); // Receive the next value
+    }
+    if (results.value == 0xE07A14E0) { // 7 Button
+
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(Out1, LOW); // Activates 1
+      digitalWrite(Out2, HIGH); // Activates 2
+      digitalWrite(Out3, HIGH); // Activates 3
+      digitalWrite(Out4, LOW); // Activates 4
+      digitalWrite(LOAD, LOW); // LOAD OUTPUT
+      digitalWrite(IREN, HIGH); // IR OUTPUT
+      delay(1000);
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(LOAD, HIGH); // LOAD OUTPUT
+      digitalWrite(STBY, HIGH); // STBY OUTPUT
+      Serial.print(" ");
+      Serial.println(results.value, HEX);
+      Serial.println("PROGRAMM 7");
+      irrecv.resume(); // Receive the next value
+    }
+
+    if (results.value == 0xCAD503B8) { // 8 Button
+
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(Out1, HIGH); // Activates 1
+      digitalWrite(Out2, HIGH); // Activates 2
+      digitalWrite(Out3, HIGH); // Activates 3
+      digitalWrite(Out4, LOW); // Activates 4
+      digitalWrite(LOAD, LOW); // LOAD OUTPUT
+      digitalWrite(IREN, HIGH); // IR OUTPUT
+      delay(1000);
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(LOAD, HIGH); // LOAD OUTPUT
+      digitalWrite(STBY, HIGH); // STBY OUTPUT
+      Serial.print(" ");
+      Serial.println(results.value, HEX);
+      Serial.println("PROGRAMM 8");
+      irrecv.resume(); // Receive the next value
+    }
+
+    if (results.value == 0x719491BB) { // 9 Button
+
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(Out1, LOW); // Activates 1
+      digitalWrite(Out2, LOW); // Activates 2
+      digitalWrite(Out3, LOW); // Activates 3
+      digitalWrite(Out4, HIGH); // Activates 4
+      digitalWrite(LOAD, LOW); // LOAD OUTPUT
+      digitalWrite(IREN, HIGH); // IR OUTPUT
+      delay(1000);
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(LOAD, HIGH); // LOAD OUTPUT
+      digitalWrite(STBY, HIGH); // STBY OUTPUT
+      Serial.print(" ");
+      Serial.println(results.value, HEX);
+      Serial.println("PROGRAMM 9");
+      irrecv.resume(); // Receive the next value
+    }
+
+    if (results.value == 0x2FBC195F) { // STBY Button
+
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(Out1, HIGH); //
+      digitalWrite(Out2, LOW); //
+      digitalWrite(Out3, HIGH); //
+      digitalWrite(Out4, HIGH); //
+      digitalWrite(IREN, HIGH); // IR OUTPUT
+      delay(4000);
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(Out1, HIGH); //
+      digitalWrite(Out2, HIGH); //
+      digitalWrite(Out3, HIGH); //
+      digitalWrite(Out4, HIGH); //
+      digitalWrite(LOAD, LOW); // LOAD OUTPUT
+      delay(500);
+      digitalWrite(LOAD, HIGH); // LOAD OUTPUT
+      delay(50);
+      digitalWrite(STBY, LOW); // STBY OUTPUT
+      Serial.print(" ");
+      Serial.println(results.value, HEX);
+      Serial.println("********************************************************************************************************");
+      Serial.println("**                                 STAND-BY - Wait any seconds                                         **");
+      Serial.println("********************************************************************************************************");
+      delay(6000);
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      Serial.println("********************************************************************************************************");
+      Serial.println("**                         OK! You can use the remote control again!                                  **");
+      Serial.println("********************************************************************************************************");
+      irrecv.resume(); // Receive the next value
+    }
+
+
+
+
+
+
+
+
+
+    if (results.value == 0x525304A8) { // 1.. Button
+
+      digitalWrite(CUP, LOW); // LOAD OUTPUT
+      delay(50);
+      digitalWrite(CUP, HIGH); // LOAD OUTPUT
+      Serial.print(" ");
+      Serial.println(results.value, HEX);
+      Serial.println("BUTTON UP");
+      delay(500);
+
+
+
+    }
+
+
+
+
+    if (results.value == 0xC44BAD33) { // A/B Button
+
+
+      digitalWrite(TVVCR, HIGH); // TV/VCR OUTPUT
+      delay(50);
+      digitalWrite(TVVCR, LOW); // TV/VCR OUTPUT
+      Serial.print(" ");
+      Serial.println(results.value, HEX);
+      Serial.println("BUTTON TV/VCR");
+      delay(250);
+
+
+    }
+
+
+    if (results.value == 0xA19502CB) { // BRIGHT-Button
+
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(Out1, HIGH); // Activates 1
+      digitalWrite(Out2, LOW); // Activates 2
+      digitalWrite(Out3, LOW); // Activates 3
+      digitalWrite(Out4, HIGH); // Activates 4
+      digitalWrite(LOAD, HIGH); // LOAD OUTPUT
+      digitalWrite(IREN, HIGH); // IR OUTPUT
+      delay(1000);
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(LOAD, HIGH); // LOAD OUTPUT
+      digitalWrite(STBY, HIGH); // STBY OUTPUT
+      int sensorValue = analogRead(A1);
+      Serial.print(" ");
+      Serial.println(results.value, HEX);
+      Serial.println("BRIGHT DOWN");
+      // Convert the analog reading (which goes from 0 - 1023) to a voltage (0 - 5V):
+      float voltage = (sensorValue * refVcc / 1024);
+      // print out the value you read:
+      Serial.print(voltage);
+      Serial.println ("V");
+      irrecv.resume(); // Receive the next value
+    }
+
+    if (results.value == 0x116C4E39) { // BRIGHT+ Button
+
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(Out1, HIGH); // Activates 1
+      digitalWrite(Out2, HIGH); // Activates 2
+      digitalWrite(Out3, LOW); // Activates 3
+      digitalWrite(Out4, HIGH); // Activates 4
+      digitalWrite(LOAD, HIGH); // LOAD OUTPUT
+      digitalWrite(IREN, HIGH); // IR OUTPUT
+      delay(1000);
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(LOAD, HIGH); // LOAD OUTPUT
+      digitalWrite(STBY, HIGH); // STBY OUTPUT
+      int sensorValue = analogRead(A1);
+      Serial.print(" ");
+      Serial.println(results.value, HEX);
+      Serial.println("BRIGHT UP");
+      // Convert the analog reading (which goes from 0 - 1023) to a voltage (0 - 5V):
+      float voltage = (sensorValue * refVcc / 1024);
+      // print out the value you read:
+      Serial.print(voltage);
+      Serial.println ("V");
+      irrecv.resume(); // Receive the next value
+    }
+
+    if (results.value == 0x7BBB3DF) { // VOL+ Button
+
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(Out1, HIGH); // Activates 1
+      digitalWrite(Out2, HIGH); // Activates 2
+      digitalWrite(Out3, LOW); // Activates 3
+      digitalWrite(Out4, LOW); // Activates 4
+      digitalWrite(LOAD, HIGH); // LOAD OUTPUT
+      digitalWrite(IREN, HIGH); // IR OUTPUT
+      delay(1000);
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(LOAD, HIGH); // LOAD OUTPUT
+      digitalWrite(STBY, HIGH); // STBY OUTPUT
+      int sensorValue = analogRead(A0);
+      Serial.print(" ");
+      Serial.println(results.value, HEX);
+      Serial.println("VOLUME UP");
+      // Convert the analog reading (which goes from 0 - 1023) to a voltage (0 - 5V):
+      float voltage = (sensorValue * refVcc / 1024);
+      // print out the value you read:
+      Serial.print(voltage);
+      Serial.println ("V");
+      irrecv.resume(); // Receive the next value
+    }
+
+    if (results.value == 0x2C48A874) { // VOL- Button
+
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(Out1, HIGH); // Activates 1
+      digitalWrite(Out2, LOW); // Activates 2
+      digitalWrite(Out3, LOW); // Activates 3
+      digitalWrite(Out4, LOW); // Activates 4
+      digitalWrite(LOAD, HIGH); // LOAD OUTPUT
+      digitalWrite(IREN, HIGH); // IR OUTPUT
+      delay(1000);
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(LOAD, HIGH); // LOAD OUTPUT
+      digitalWrite(STBY, HIGH); // STBY OUTPUT
+      int sensorValue = analogRead(A0);
+      Serial.print(" ");
+      Serial.println(results.value, HEX);
+      Serial.println("VOLUME DOWN");
+      // Convert the analog reading (which goes from 0 - 1023) to a voltage (0 - 5V):
+      float voltage = (sensorValue * refVcc / 1024);
+      // print out the value you read:
+      Serial.print(voltage);
+      Serial.println ("V");
+      irrecv.resume(); // Receive the next value
+    }
+
+    if (results.value == 0x2AD3CE17) { // UP Color
+
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(Out1, HIGH); // Activates 1
+      digitalWrite(Out2, HIGH); // Activates 2
+      digitalWrite(Out3, HIGH); // Activates 3
+      digitalWrite(Out4, LOW); // Activates 4
+      digitalWrite(LOAD, HIGH); // LOAD OUTPUT
+      digitalWrite(IREN, HIGH); // IR OUTPUT
+      delay(1000);
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(LOAD, HIGH); // LOAD OUTPUT
+      digitalWrite(STBY, HIGH); // STBY OUTPUT
+      int sensorValue = analogRead(A2);
+      Serial.print(" ");
+      Serial.println(results.value, HEX);
+      Serial.println("COLOR UP");
+      // Convert the analog reading (which goes from 0 - 1023) to a voltage (0 - 5V):
+      float voltage = (sensorValue * refVcc / 1024);
+      // print out the value you read:
+      Serial.print(voltage);
+      Serial.println ("V");
+      irrecv.resume(); // Receive the next value
+    }
+
+    if (results.value == 0x20BA0BD3) { // DOWN COLOR
+
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(Out1, HIGH); // Activates 1
+      digitalWrite(Out2, LOW); // Activates 2
+      digitalWrite(Out3, HIGH); // Activates 3
+      digitalWrite(Out4, LOW); // Activates 4
+      digitalWrite(LOAD, HIGH); // LOAD OUTPUT
+      digitalWrite(IREN, HIGH); // IR OUTPUT
+      delay(1000);
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(LOAD, HIGH); // LOAD OUTPUT
+      digitalWrite(STBY, HIGH); // STBY OUTPUT
+      int sensorValue = analogRead(A2);
+      Serial.print(" ");
+      Serial.println(results.value, HEX);
+      Serial.println("COLOR DOWN");
+      // Convert the analog reading (which goes from 0 - 1023) to a voltage (0 - 5V):
+      float voltage = (sensorValue * refVcc / 1024);
+      // print out the value you read:
+      Serial.print(voltage);
+      Serial.println ("V");
+      irrecv.resume(); // Receive the next value
+    }
+
+    if (results.value == 0x70DA5B2) { // MUTE Button
+
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(Out1, LOW); // Activates 1
+      digitalWrite(Out2, LOW); // Activates 2
+      digitalWrite(Out3, HIGH); // Activates 3
+      digitalWrite(Out4, HIGH); // Activates 4
+      digitalWrite(LOAD, HIGH); // LOAD OUTPUT
+      digitalWrite(IREN, HIGH); // IR OUTPUT
+      delay(1000);
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(LOAD, HIGH); // LOAD OUTPUT
+      digitalWrite(STBY, HIGH); // STBY OUTPUT
+      int sensorValue = analogRead(A0);
+      Serial.print(" ");
+      Serial.println(results.value, HEX);
+      Serial.println("MUTE ON");// Convert the analog reading (which goes from 0 - 1023) to a voltage (0 - 5V):
+      float voltage = (sensorValue * refVcc / 1024);
+      // print out the value you read:
+      Serial.print(voltage);
+      Serial.println ("V");
+      delay(1000);
+      irrecv.resume(); // Receive the next value
+    }
+
+    if (results.value == 0x52C4A74D) { // IDEAL Button
+
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(Out1, LOW); // Activates 1
+      digitalWrite(Out2, HIGH); // Activates 2
+      digitalWrite(Out3, LOW); // Activates 3
+      digitalWrite(Out4, HIGH); // Activates 4
+      digitalWrite(LOAD, HIGH); // LOAD OUTPUT
+      digitalWrite(IREN, HIGH); // IR OUTPUT
+      delay(1000);
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(LOAD, HIGH); // LOAD OUTPUT
+      digitalWrite(STBY, HIGH); // STBY OUTPUT
+      Serial.print(" ");
+      Serial.println(results.value, HEX);
+      Serial.println("LAST MEMORY");
+      irrecv.resume(); // Receive the next value
+    }
+
+    if (results.value == 0xFCC37F01) { // MENU Button
+
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(Out1, LOW); // Activates 1
+      digitalWrite(Out2, LOW); // Activates 2
+      digitalWrite(Out3, LOW); // Activates 3
+      digitalWrite(Out4, HIGH); // Activates 4
+      digitalWrite(LOAD, HIGH); // LOAD OUTPUT
+      digitalWrite(IREN, HIGH); // IR OUTPUT
+      delay(1000);
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(LOAD, HIGH); // LOAD OUTPUT
+      digitalWrite(STBY, HIGH); // STBY OUTPUT
+      Serial.print(" ");
+      Serial.println(results.value, HEX);
+      Serial.println("MENU SET");
+      irrecv.resume(); // Receive the next value
+    }
+
+    if (results.value == 0xDE7BB2EE) { // INFO Button
+
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(Out1, LOW); // Activates 1
+      digitalWrite(Out2, HIGH); // Activates 2
+      digitalWrite(Out3, HIGH); // Activates 3
+      digitalWrite(Out4, LOW); // Activates 4
+      digitalWrite(LOAD, HIGH); // LOAD OUTPUT
+      digitalWrite(IREN, HIGH); // IR OUTPUT
+      delay(1000);
+      digitalWrite(IREN, LOW); // IR OUTPUT
+      digitalWrite(LOAD, HIGH); // LOAD OUTPUT
+      digitalWrite(STBY, HIGH); // STBY OUTPUT
+      Serial.print(" ");
+      Serial.println(results.value, HEX);
+      Serial.println("INFO TABLE");
+      irrecv.resume(); // Receive the next value
+    }
+
+    // --------------------------------------------------------------------------------------------------------------------------------
+
+    digitalWrite(IREN, LOW); // IR OUTPUT
+    digitalWrite(Out1, HIGH); //
+    digitalWrite(Out2, HIGH); //
+    digitalWrite(Out3, HIGH); //
+    digitalWrite(Out4, HIGH); //
+    digitalWrite(LOAD, HIGH); // LOAD OUTPUT
+    digitalWrite(IREN, HIGH); // IR OUTPUT
+    delay(500);
+    irrecv.resume(); // Receive the next value
+    digitalWrite(IREN, LOW); // IR OUTPUT
+
+  }
+  delay(5);
+}
